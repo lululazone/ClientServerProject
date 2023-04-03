@@ -1,0 +1,15 @@
+diff a/mainwindow.cpp b/mainwindow.cpp	(rejected hunks)
+@@ -5,8 +5,12 @@
+ MainWindow::MainWindow(QWidget *parent)
+     : QMainWindow(parent)
+     , ui(new Ui::MainWindow)
++
+ {
+-    ui->setupUi(this);
++   ui->setupUi(this);
++
++
++
+ }
+ 
+ MainWindow::~MainWindow()

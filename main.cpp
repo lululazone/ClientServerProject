@@ -1,3 +1,4 @@
+
 #include <QCoreApplication>
 #include "client.h"
 #include "server.h"
@@ -37,4 +38,5 @@ int main(int argc, char *argv[])
 
 
     return a.exec();
+
 }

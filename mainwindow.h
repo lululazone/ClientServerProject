@@ -1,3 +1,4 @@
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -15,12 +16,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-<<<<<<< HEAD
-=======
 private slots:
     void on_pushButton_clicked();
 
->>>>>>> origin/UI
 private:
     Ui::MainWindow *ui;
 };

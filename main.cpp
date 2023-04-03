@@ -1,12 +1,12 @@
-
-#include <QCoreApplication>
+#include "mainwindow.h"
+#include <QApplication>
 #include "client.h"
 #include "server.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
-
+    QApplication a(argc, argv);
+    MainWindow w;
     // Créer un serveur et le démarrer sur le port 1234
     Server server;
     server.startServer(1234);
@@ -36,7 +36,9 @@ int main(int argc, char *argv[])
 
 
 
-
+    w.show();
     return a.exec();
 
 }
+
+

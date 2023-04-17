@@ -10,13 +10,21 @@ CONFIG += c++17
 
 SOURCES += \
     client.cpp \
+    errormanager.cpp \
+    indexerlexer.cpp \
+    lexer.cpp \
     main.cpp \
     mainwindow.cpp \
+    querylexer.cpp \
     server.cpp
 
 HEADERS += \
     client.h \
+    errormanager.h \
+    indexerlexer.h \
+    lexer.h \
     mainwindow.h \
+    querylexer.h \
     server.h
 
 FORMS += \

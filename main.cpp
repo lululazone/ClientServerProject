@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     // Créer un serveur et le démarrer sur le port 1234
     Server server;
-    server.startServer(1234);
+    server.startServer(7007);
 
     // Créer un client et se connecter au serveur
     Client client;

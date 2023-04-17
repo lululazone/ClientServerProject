@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QObject>
 
+
 class Client : public QObject
 {
     Q_OBJECT

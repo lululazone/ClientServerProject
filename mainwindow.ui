@@ -82,7 +82,7 @@
           <string>search</string>
          </property>
          <property name="icon">
-          <iconset theme="folder-new" resource="search.qrc">
+          <iconset theme="folder-new">
            <normaloff>:/Pictures/search-interface-symbol.png</normaloff>:/Pictures/search-interface-symbol.png</iconset>
          </property>
          <property name="iconSize">
@@ -235,6 +235,19 @@
      <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
+   <widget class="QPushButton" name="DbConnectButton">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>80</y>
+      <width>221</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Db connection</string>
+    </property>
+   </widget>
    <zorder>label_2</zorder>
    <zorder>label_3</zorder>
    <zorder>label_8</zorder>
@@ -244,12 +257,12 @@
    <zorder>label_7</zorder>
    <zorder>label_5</zorder>
    <zorder>layoutWidget</zorder>
+   <zorder>DbConnectButton</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
   <include location="butterfly.qrc"/>
-  <include location="search.qrc"/>
  </resources>
  <connections/>
 </ui>

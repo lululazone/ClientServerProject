@@ -41,7 +41,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    ../search.qrc \
+    search.qrc \
     butterfly.qrc
 
 

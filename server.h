@@ -8,6 +8,7 @@
 class Server : public QObject
 {
     Q_OBJECT
+    QThread thread;
 
 public:
     explicit Server(QObject *parent = nullptr);
@@ -15,10 +16,12 @@ public:
 public slots:
     void startServer(quint16 port);
     void sendMessage(QString message);
+    void readData();
+    void scanDisk();
+    void threaded();
 
 private slots:
     void newConnection();
-    void readData();
     void displayError(QAbstractSocket::SocketError socketError);
 
 signals:

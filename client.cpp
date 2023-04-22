@@ -1,4 +1,5 @@
 #include "client.h"
+#include "mainwindow.h"
 
 Client::Client(QObject *parent) : QObject(parent)
 {
@@ -24,31 +25,17 @@ void Client::sendMessage(QString message)
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
 
-    out << quint16(0);
-    out << message;
+    out << quint16(0); // convertir la chaîne de caractères en UTF-8
 
     out.device()->seek(0);
     out << quint16(data.size() - sizeof(quint16));
-
-    socket->write(data);
+    socket->write(message.toUtf8());
 }
 
 void Client::readData()
 {
-    QDataStream in(socket);
-
-    if (socket->bytesAvailable() < sizeof(quint16))
-        return;
-
-    quint16 messageSize;
-    in >> messageSize;
-
-    if (socket->bytesAvailable() < messageSize)
-        return;
-
-    QString message;
-    in >> message;
-
+    QByteArray data = socket->readAll();
+    QString message = QString::fromUtf8(data); // convertir les données en UTF-8
     emit messageReceived(message);
 }
 

@@ -1,4 +1,5 @@
 #include "server.h"
+#include "Lexer.h"
 
 Server::Server(QObject *parent) : QObject(parent)
 {
@@ -15,6 +16,7 @@ void Server::startServer(quint16 port)
     } else {
         qDebug() << "Unable to start server on port" << port;
     }
+
 }
 
 void Server::sendMessage(QString message)
@@ -22,14 +24,14 @@ void Server::sendMessage(QString message)
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
 
+    out.setVersion(QDataStream::Qt_5_15);
     out << quint16(0);
-    out << message;
-
+    out << message.toUtf8();
     out.device()->seek(0);
     out << quint16(data.size() - sizeof(quint16));
 
     for (QTcpSocket *client : clients) {
-        client->write(data);
+        client->write(message.toUtf8());
     }
 }
 
@@ -48,26 +50,42 @@ void Server::newConnection()
 
 void Server::readData()
 {
-    QTcpSocket *client = qobject_cast<QTcpSocket *>(sender());
+        QTcpSocket *client = qobject_cast<QTcpSocket *>(sender());
 
-    if (!client)
-        return;
+        if (!client)
+            return;
+        QByteArray data = client->readAll();
+        QString message = QString::fromUtf8(data);
+        if(message == "Database init"){
+            scanDisk();
+            return;
+        }
+        qDebug() <<message;
+        Lexer lexer;
+        ErrorManager error = *new ErrorManager();
+        QString output = lexer.Tokenize(message,error);
+        sendMessage(output);
+}
 
-    QDataStream in(client);
+void Server::scanDisk()
+{
+        moveToThread(&thread);
+        connect(&thread, SIGNAL(started()), this, SLOT(threaded()));
+        thread.start();
+        thread.setPriority(QThread::LowPriority);
 
-    if (client->bytesAvailable() < sizeof(quint16))
-        return;
+}
 
-    quint16 messageSize;
-    in >> messageSize;
 
-    if (client->bytesAvailable() < messageSize)
-        return;
+void Server::threaded(){
+        QDirIterator it("C:/", QDirIterator::Subdirectories);
+        sendMessage("Processing....");
+        QString message = "";
+        while (it.hasNext()) {
+            message = it.next();
+        }
+        sendMessage("Done !");
 
-    QString message;
-    in >> message;
-
-    emit messageReceived(message);
 }
 
 void Server::displayError(QAbstractSocket::SocketError socketError)

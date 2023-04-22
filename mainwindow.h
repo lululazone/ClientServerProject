@@ -2,6 +2,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "client.h"
+#include "server.h"
 #include <QMainWindow>
 #include <lexer.h>
 #include <QTextEdit>
@@ -15,8 +17,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    Server server;
+    Client client;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void appendMessage(const QString& output);
 
 private slots:
     void on_pushButton_clicked();

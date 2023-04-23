@@ -1,5 +1,8 @@
 #include "server.h"
 #include "Lexer.h"
+#include <QtSql>
+#include <QSqlDatabase>
+#include <QDebug>
 
 Server::Server(QObject *parent) : QObject(parent)
 {
@@ -78,7 +81,27 @@ void Server::scanDisk()
 
 
 void Server::threaded(){
-        QDirIterator it("C:/", QDirIterator::Subdirectories);
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+       db.setDatabaseName("./qtdb.db");
+    if (db.open()) {
+         QSqlDatabase db = QSqlDatabase::database("QSQLITE");
+         QSqlQuery query;
+         query.exec("CREATE TABLE IF NOT EXISTS 'files' ( \
+         id INTEGER PRIMARY KEY AUTOINCREMENT, \
+         filename TEXT NOT NULL, \
+         last_modified DATETIME NOT NULL, \
+         creation_date DATETIME NOT NULL, \
+         max_size INTEGER NULL, \
+         min_size INTEGER NULL, \
+         size INTEGER NOT NULL, \
+         ext TEXT NULL, \
+         type TEXT NULL)");
+        query.exec("INSERT INTO files (filename, last_modified, creation_date, max_size, min_size, size, ext, type) VALUES ('example.txt', '2022-03-15 13:45:00', '2022-01-01 09:00:00', 1000, 100, 500, 'txt', 'text/plain')");
+    } else {
+        QString error = db.lastError().text();
+    }
+
+        QDirIterator it("C:/fakefolder", QDirIterator::Subdirectories);
         sendMessage("Processing....");
         QString message = "";
         while (it.hasNext()) {
@@ -90,15 +113,26 @@ void Server::threaded(){
                 // add filename to database here...
                 qDebug()<<file;
                 QFileInfo fileInfo(message+"/"+file);
-
                 QDateTime creationDate = fileInfo.birthTime();
                 QDateTime lastModified = fileInfo.lastModified();
                 qint64 fileSize = fileInfo.size();
                 QString outputDebug = creationDate.toString() + lastModified.toString();
                 qDebug() << outputDebug;
                 //add file info to database here...
+                QSqlQuery query;
+                           query.prepare("INSERT INTO files (filename, last_modified, creation_date, size) VALUES (:filename, :last_modified, :creation_date, :size)");
+                           query.bindValue(":filename", file);
+                           query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd hh:mm:ss"));
+                           query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd hh:mm:ss"));
+                           query.bindValue(":size", fileSize);
+//                           query.bindValue(":max_size", fileSize);
+//                           query.bindValue(":min_size", fileSize);
+//                           query.bindValue(":ext", fileInfo.suffix());
+//                           query.bindValue(":type", QMimeDatabase().mimeTypeForFile(fileInfo.filePath()).name());
+                           if (!query.exec()) {
+                               qDebug() << "Failed to add file to database: " << query.lastError().text();
+                           }
             }
-
         }
         sendMessage("Done !");
 

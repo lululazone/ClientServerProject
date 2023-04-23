@@ -12,9 +12,6 @@ QString QueryLexer::Tokenize(QStringList input)
         return "Usage: SEARCH <filename_part> [OPTIONS]";
     }
     return optionToken(input);
-
-
-
 }
 
 QString QueryLexer::optionToken(QStringList input)

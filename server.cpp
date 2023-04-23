@@ -91,8 +91,6 @@ void Server::threaded(){
          filename TEXT NOT NULL, \
          last_modified DATETIME NOT NULL, \
          creation_date DATETIME NOT NULL, \
-         max_size INTEGER NULL, \
-         min_size INTEGER NULL, \
          size INTEGER NOT NULL, \
          ext TEXT NULL, \
          type TEXT NULL)");
@@ -125,8 +123,6 @@ void Server::threaded(){
                            query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd hh:mm:ss"));
                            query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd hh:mm:ss"));
                            query.bindValue(":size", fileSize);
-//                           query.bindValue(":max_size", fileSize);
-//                           query.bindValue(":min_size", fileSize);
 //                           query.bindValue(":ext", fileInfo.suffix());
 //                           query.bindValue(":type", QMimeDatabase().mimeTypeForFile(fileInfo.filePath()).name());
                            if (!query.exec()) {

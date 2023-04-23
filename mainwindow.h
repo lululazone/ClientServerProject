@@ -2,11 +2,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "client.h"
+#include "server.h"
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtSql>
 #include <QDebug>
 #include <QFileInfo>
+#include <lexer.h>
+#include <QTextEdit>
 
 
 QT_BEGIN_NAMESPACE
@@ -18,8 +22,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    Server server;
+    Client client;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void appendMessage(const QString& output);
 
 private slots:
     void on_pushButton_clicked();

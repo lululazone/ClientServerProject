@@ -10,13 +10,21 @@ CONFIG += c++11
 
 SOURCES += \
     client.cpp \
+    errormanager.cpp \
+    indexerlexer.cpp \
+    lexer.cpp \
     main.cpp \
     mainwindow.cpp \
+    querylexer.cpp \
     server.cpp
 
 HEADERS += \
     client.h \
+    errormanager.h \
+    indexerlexer.h \
+    lexer.h \
     mainwindow.h \
+    querylexer.h \
     server.h
 
 FORMS += \
@@ -33,7 +41,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    ../search.qrc \
+    search.qrc \
     butterfly.qrc
 
 

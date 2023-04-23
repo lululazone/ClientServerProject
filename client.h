@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QObject>
 
+
 class Client : public QObject
 {
     Q_OBJECT
@@ -17,13 +18,14 @@ public:
 public slots:
     void connectToServer(QString host, quint16 port);
     void sendMessage(QString message);
+    void readData();
 
 private slots:
-    void readData();
+
     void displayError(QAbstractSocket::SocketError socketError);
 
 signals:
-    void messageReceived(const QString &message);
+    void messageReceived(const QString& message);
 
 private:
     QTcpSocket *socket;

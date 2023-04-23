@@ -83,6 +83,22 @@ void Server::threaded(){
         QString message = "";
         while (it.hasNext()) {
             message = it.next();
+            //Add folder to database (message) here....
+            QDir directory(message);
+            QStringList files = directory.entryList(QStringList() << "*.*",QDir::Files);
+            foreach(QString file, files){
+                // add filename to database here...
+                qDebug()<<file;
+                QFileInfo fileInfo(message+"/"+file);
+
+                QDateTime creationDate = fileInfo.birthTime();
+                QDateTime lastModified = fileInfo.lastModified();
+                qint64 fileSize = fileInfo.size();
+                QString outputDebug = creationDate.toString() + lastModified.toString();
+                qDebug() << outputDebug;
+                //add file info to database here...
+            }
+
         }
         sendMessage("Done !");
 

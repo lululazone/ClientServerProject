@@ -3,6 +3,9 @@
 #include <QtSql>
 #include <QSqlDatabase>
 #include <QDebug>
+#include <string>
+
+using namespace std;
 
 Server::Server(QObject *parent) : QObject(parent)
 {
@@ -104,11 +107,10 @@ void Server::threaded(){
         QString message = "";
         while (it.hasNext()) {
             message = it.next();
-            //Add folder to database (message) here....
+            //Add folder PATH to database (message) here....
             QDir directory(message);
             QStringList files = directory.entryList(QStringList() << "*.*",QDir::Files);
             foreach(QString file, files){
-                // add filename to database here...
                 qDebug()<<file;
                 QFileInfo fileInfo(message+"/"+file);
                 QDateTime creationDate = fileInfo.birthTime();
@@ -116,14 +118,21 @@ void Server::threaded(){
                 qint64 fileSize = fileInfo.size();
                 QString outputDebug = creationDate.toString() + lastModified.toString();
                 qDebug() << outputDebug;
-                //add file info to database here...
+
+                //getting the extension
+                QString extension;
+                int dot_pos = file.lastIndexOf(".");
+                if (dot_pos != -1) {
+                    extension = file.mid(dot_pos + 1);
+                }
+                //add file info to database here
                 QSqlQuery query;
-                           query.prepare("INSERT INTO files (filename, last_modified, creation_date, size) VALUES (:filename, :last_modified, :creation_date, :size)");
+                           query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext) VALUES (:filename, :last_modified, :creation_date, :size, :ext)");
                            query.bindValue(":filename", file);
                            query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd hh:mm:ss"));
                            query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd hh:mm:ss"));
                            query.bindValue(":size", fileSize);
-//                           query.bindValue(":ext", fileInfo.suffix());
+                           query.bindValue(":ext", extension);
 //                           query.bindValue(":type", QMimeDatabase().mimeTypeForFile(fileInfo.filePath()).name());
                            if (!query.exec()) {
                                qDebug() << "Failed to add file to database: " << query.lastError().text();

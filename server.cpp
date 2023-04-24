@@ -96,8 +96,9 @@ void Server::threaded(){
          creation_date DATETIME NOT NULL, \
          size INTEGER NOT NULL, \
          ext TEXT NULL, \
-         type TEXT NULL)");
-        query.exec("INSERT INTO files (filename, last_modified, creation_date, max_size, min_size, size, ext, type) VALUES ('example.txt', '2022-03-15 13:45:00', '2022-01-01 09:00:00', 1000, 100, 500, 'txt', 'text/plain')");
+         type TEXT NULL, \
+         path TEXT NULL)");
+        query.exec("INSERT INTO files (filename, last_modified, creation_date, max_size, min_size, size, ext, type, path) VALUES ('example.txt', '2022-03-15 13:45:00', '2022-01-01 09:00:00', 1000, 100, 500, 'txt', 'text/plain', 'something')");
     } else {
         QString error = db.lastError().text();
     }
@@ -107,7 +108,7 @@ void Server::threaded(){
         QString message = "";
         while (it.hasNext()) {
             message = it.next();
-            //Add folder PATH to database (message) here....
+
             QDir directory(message);
             QStringList files = directory.entryList(QStringList() << "*.*",QDir::Files);
             foreach(QString file, files){
@@ -131,15 +132,22 @@ void Server::threaded(){
                 longType = QMimeDatabase().mimeTypeForFile(fileInfo.filePath()).name();
                 QStringList longTypeParts = longType.split("/");
                 QString shortType = longTypeParts.first();
+
+                //Add folder PATH to database (message) here...
+                QString path;
+                path = message + file;
+                qDebug() << path;
+
                 //add file info to database here
                 QSqlQuery query;
-                           query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext, type) VALUES (:filename, :last_modified, :creation_date, :size, :ext, :type)");
+                           query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext, type, path) VALUES (:filename, :last_modified, :creation_date, :size, :ext, :type, :path)");
                            query.bindValue(":filename", file);
                            query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd hh:mm:ss"));
                            query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd hh:mm:ss"));
                            query.bindValue(":size", fileSize);
                            query.bindValue(":ext", extension);
-                           query.bindValue(":type",shortType );
+                           query.bindValue(":type", shortType);
+                           query.bindValue(":path", path);
                            if (!query.exec()) {
                                qDebug() << "Failed to add file to database: " << query.lastError().text();
                            }

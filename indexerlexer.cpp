@@ -1,135 +1,77 @@
 #include "indexerlexer.h"
+#include "dbinteraction.h"
+#include "indexerfsm.h"
+#include "indexermanagerlexer.h"
 
 
 IndexerLexer::IndexerLexer()
 {
-    indexer = {"INDEXER","GET","ADD","PUSH","CLEAR"};
-    Get_AddFilter = {"WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"};
-    indexerFilter = {"STATUS","START","PAUSE","STOP","RESUME"};
+    dialectMap["indexer"] = {"INDEXER"};
+    dialectMap["othertype"] = {"GET","ADD","PUSH","CLEAR"};
 
 
 
 }
 
-QString IndexerLexer::Tokenize(QStringList input)
+bool IndexerLexer::isIndexer(QString s)
 {
-    if(input.first()==indexer[0]){
-        return indexerToken(input);
+    if(dialectMap["indexer"].contains(s)){
+        return true;
     }
-    if(input.first()==indexer[1]){
-        return getToken(input);
-    }
-    if(input.first()==indexer[2]){
-        return addToken(input);
-    }
-    if(input.first()==indexer[3]){
-        return pushToken(input);
-    }
-    if(input.first()==indexer[4]){
-        return clearToken(input);
-    }
-    return "";
+    return false;
 
 }
 
-QString IndexerLexer::indexerToken(QStringList input)
+bool IndexerLexer::isGet(QString s)
 {
-    if(input.indexOf(indexerFilter[0]) == 1){
-        return "File finder is running";
+    if(dialectMap["othertype"].contains(s)){
+        return true;
     }
-    if(input.indexOf(indexerFilter[1]) == 1){
-        return "File finder is started";
-    }
-    if(input.indexOf(indexerFilter[2]) == 1){
-        return "File finder is paused";
-    }
-    if(input.indexOf(indexerFilter[3]) == 1){
-        return "File finder is stopped";
-    }
-    if(input.indexOf(indexerFilter[4]) == 1){
-        return "File finder is resumed";
-    }
-    return "Usage: INDEXER <STATUS|START|STOP|PAUSE|RESUME>";
+    return false;
+
 }
 
-QString IndexerLexer::getToken(QStringList input)
+bool IndexerLexer::isAdd(QString s)
 {
-    if(input.indexOf(Get_AddFilter[0]) == 1){
-        return "File finder get whitelist";
+    if(dialectMap["othertype"].contains(s)){
+        return true;
     }
-    if(input.indexOf(Get_AddFilter[1]) == 1){
-        return "File finder get blacklist";
-    }
-    if(input.indexOf(Get_AddFilter[2]) == 1){
-        return "File finder get filters";
-    }
-    if(input.contains(Get_AddFilter[3]) ==1){
-        return "File finder get skipped_filters";
-    }
-    return "Usage: GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>";
+    return false;
 
 }
 
-QString IndexerLexer::addToken(QStringList input)
+bool IndexerLexer::isPush(QString s)
 {
-    if(input.size()<= 2){
-        return "Usage: ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add|type_list_spec>";
+    if(dialectMap["othertype"].contains(s)){
+        return true;
     }
-
-    if(input.indexOf(Get_AddFilter[0]) == 1){
-        return "File finder add whitelist";
-    }
-    if(input.indexOf(Get_AddFilter[1]) == 1){
-        return "File finder add blacklist";
-    }
-    if(input.indexOf(Get_AddFilter[2]) == 1){
-        return "File finder add filters";
-    }
-    if(input.contains(Get_AddFilter[3]) ==1){
-        return "File finder add skipped_filters";
-    }
-    return "Usage: ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add|type_list_spec>";
+    return false;
 
 }
 
-QString IndexerLexer::pushToken(QStringList input)
+bool IndexerLexer::isClear(QString s)
 {
-    if(input.size()<= 3){
-        return "Usage: PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folder to add|type_list_spec> DONE";
+    if(dialectMap["othertype"].contains(s)){
+        return true;
     }
-    if(input.indexOf(Get_AddFilter[0]) == 1){
-        return "File finder push whitelist";
-    }
-    if(input.indexOf(Get_AddFilter[1]) == 1){
-        return "File finder push blacklist";
-    }
-    if(input.indexOf(Get_AddFilter[2]) == 1){
-        return "File finder push filters";
-    }
-    if(input.contains(Get_AddFilter[3]) ==1){
-        return "File finder push skipped_filters";
-    }
-    return "Usage: PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>  <folders to add|type_list_spec> DONE";
-
+    return false;
 }
 
-QString IndexerLexer::clearToken(QStringList input)
+QString IndexerLexer::Tokenize(QStringList input,DbInteraction dbManager)
 {
-    if(input.indexOf(Get_AddFilter[0]) == 1){
-        return "File finder clear whitelist";
+    IndexerFsm indexerFsm = *new IndexerFsm();
+    IndexerManagerLexer indexerManagerLexer = *new IndexerManagerLexer();
+    if(isIndexer(input.first())){
+        return indexerFsm.manageIndexing(input,dbManager);
     }
-    if(input.indexOf(Get_AddFilter[1]) == 1){
-        return "File finder clear blacklist";
+    if(isAdd(input.first()) || isClear(input.first()) || isGet(input.first()) || isPush(input.first())){
+        return indexerManagerLexer.Tokenize(input,dbManager);
     }
-    if(input.indexOf(Get_AddFilter[2]) == 1){
-        return "File finder clear filters";
-    }
-    if(input.contains(Get_AddFilter[3]) ==1){
-        return "File finder clear skipped_filters";
-    }
-    return "Usage: CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>";
+    return "No valid input for indexing statement";
 
 }
+
+
 
 
 

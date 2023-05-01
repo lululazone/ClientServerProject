@@ -1,6 +1,8 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "dbinteraction.h"
+#include "qsqldatabase.h"
 #include <QtNetwork>
 #include <QTcpServer>
 #include <QObject>
@@ -12,13 +14,12 @@ class Server : public QObject
 
 public:
     explicit Server(QObject *parent = nullptr);
+    DbInteraction dbManager;
 
 public slots:
     void startServer(quint16 port);
     void sendMessage(QString message);
     void readData();
-    void scanDisk();
-    void threaded();
 
 private slots:
     void newConnection();

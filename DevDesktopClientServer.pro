@@ -9,23 +9,35 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    addpushfsm.cpp \
     client.cpp \
+    dbinteraction.cpp \
     errormanager.cpp \
+    getclearfsm.cpp \
+    indexerfsm.cpp \
     indexerlexer.cpp \
+    indexermanagerlexer.cpp \
     lexer.cpp \
     main.cpp \
     mainwindow.cpp \
     querylexer.cpp \
-    server.cpp
+    server.cpp \
+    threadedoperation.cpp
 
 HEADERS += \
+    addpushfsm.h \
     client.h \
+    dbinteraction.h \
     errormanager.h \
+    getclearfsm.h \
+    indexerfsm.h \
     indexerlexer.h \
+    indexermanagerlexer.h \
     lexer.h \
     mainwindow.h \
     querylexer.h \
-    server.h
+    server.h \
+    threadedoperation.h
 
 FORMS += \
     mainwindow.ui

@@ -6,7 +6,7 @@ QueryLexer::QueryLexer()
 
 }
 
-QString QueryLexer::Tokenize(QStringList input)
+QString QueryLexer::Tokenize(QStringList input,DbInteraction dbManager)
 {
     if(input.size()<2){
         return "Usage: SEARCH <filename_part> [OPTIONS]";

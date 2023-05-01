@@ -10,9 +10,9 @@ using namespace std;
 Server::Server(QObject *parent) : QObject(parent)
 {
     server = new QTcpServer(this);
-
     connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
     connect(server, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+    dbManager.db.open();
 }
 
 void Server::startServer(quint16 port)
@@ -62,100 +62,16 @@ void Server::readData()
             return;
         QByteArray data = client->readAll();
         QString message = QString::fromUtf8(data);
-        if(message == "Database init"){
-            scanDisk();
-            return;
-        }
         qDebug() <<message;
         Lexer lexer;
         ErrorManager error = *new ErrorManager();
-        QString output = lexer.Tokenize(message,error);
+        QString output = lexer.Tokenize(message,error,dbManager);
         sendMessage(output);
 }
 
-void Server::scanDisk()
-{
-        moveToThread(&thread);
-        connect(&thread, SIGNAL(started()), this, SLOT(threaded()));
-        thread.start();
-        thread.setPriority(QThread::LowPriority);
-
-}
 
 
-void Server::threaded(){
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-       db.setDatabaseName("./qtdb.db");
-    if (db.open()) {
-         QSqlDatabase db = QSqlDatabase::database("QSQLITE");
-         QSqlQuery query;
-         query.exec("CREATE TABLE IF NOT EXISTS 'files' ( \
-         id INTEGER PRIMARY KEY AUTOINCREMENT, \
-         filename TEXT NOT NULL, \
-         last_modified DATETIME NOT NULL, \
-         creation_date DATETIME NOT NULL, \
-         size INTEGER NOT NULL, \
-         ext TEXT NULL, \
-         type TEXT NULL, \
-         path TEXT NULL)");
-        query.exec("INSERT INTO files (filename, last_modified, creation_date, max_size, min_size, size, ext, type, path) VALUES ('example.txt', '2022-03-15 13:45:00', '2022-01-01 09:00:00', 1000, 100, 500, 'txt', 'text/plain', 'something')");
-    } else {
-        QString error = db.lastError().text();
-    }
 
-        QDirIterator it("C:/fakefolder", QDirIterator::Subdirectories);
-        sendMessage("Processing....");
-        QString message = "";
-        while (it.hasNext()) {
-            message = it.next();
-
-            QDir directory(message);
-            QStringList files = directory.entryList(QStringList() << "*.*",QDir::Files);
-            foreach(QString file, files){
-                qDebug()<<file;
-                QFileInfo fileInfo(message+"/"+file);
-                QDateTime creationDate = fileInfo.birthTime();
-                QDateTime lastModified = fileInfo.lastModified();
-                qint64 fileSize = fileInfo.size();
-                QString outputDebug = creationDate.toString() + lastModified.toString();
-                qDebug() << outputDebug;
-
-                //getting the extension
-                QString extension;
-                int dot_pos = file.lastIndexOf(".");
-                if (dot_pos != -1) {
-                    extension = file.mid(dot_pos + 1);
-                }
-
-                //getting the type
-                QString longType;
-                longType = QMimeDatabase().mimeTypeForFile(fileInfo.filePath()).name();
-                QStringList longTypeParts = longType.split("/");
-                QString shortType = longTypeParts.first();
-
-                //Add folder PATH to database (message) here...
-                QString path;
-                path = message + file;
-                qDebug() << path;
-
-                //add file info to database here
-                QSqlQuery query;
-                           query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext, type, path) VALUES (:filename, :last_modified, :creation_date, :size, :ext, :type, :path)");
-                           query.bindValue(":filename", file);
-                           query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd hh:mm:ss"));
-                           query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd hh:mm:ss"));
-                           query.bindValue(":size", fileSize);
-                           query.bindValue(":ext", extension);
-                           query.bindValue(":type", shortType);
-                           query.bindValue(":path", path);
-                           if (!query.exec()) {
-                               qDebug() << "Failed to add file to database: " << query.lastError().text();
-                           }
-            }
-        }
-        sendMessage("Done !");
-
-}
 
 void Server::displayError(QAbstractSocket::SocketError socketError)
 {

@@ -120,7 +120,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
@@ -136,7 +136,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -152,7 +152,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -168,7 +168,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
@@ -184,7 +184,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -200,7 +200,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -216,7 +216,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -232,7 +232,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="butterfly.qrc">:/Pictures/butterfly.png</pixmap>
+     <pixmap>:/Pictures/butterfly.png</pixmap>
     </property>
    </widget>
    <widget class="QPushButton" name="DbConnectButton">
@@ -248,6 +248,19 @@
      <string>Db connection</string>
     </property>
    </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>590</y>
+      <width>641</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+   </widget>
    <zorder>label_2</zorder>
    <zorder>label_3</zorder>
    <zorder>label_8</zorder>
@@ -258,11 +271,10 @@
    <zorder>label_5</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>DbConnectButton</zorder>
+   <zorder>progressBar</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="butterfly.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

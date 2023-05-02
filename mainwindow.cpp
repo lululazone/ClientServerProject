@@ -27,7 +27,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::appendMessage(const QString& output)
 {
-   ui->textEdit->insertPlainText(output);
+   QStringList outputToList = output.split(" ");
+   if(outputToList.contains("percentage")){
+       ui->progressBar->setValue(outputToList[1].toInt());
+   }
+   else{
+    ui->textEdit->insertPlainText(output);
+   }
+
 }
 
 

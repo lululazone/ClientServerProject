@@ -1,5 +1,9 @@
 
 #include "indexerfsm.h"
+#include "qdiriterator.h"
+#include "qmimedatabase.h"
+#include "qsqlerror.h"
+#include "qsqlquery.h"
 
 IndexerFsm::IndexerFsm()
 {
@@ -8,6 +12,7 @@ IndexerFsm::IndexerFsm()
     dialectIndexerMap["stop"] = {"STOP"};
     dialectIndexerMap["pause"] = {"PAUSE"};
     dialectIndexerMap["resume"] = {"RESUME"};
+
 }
 
 bool IndexerFsm::isStatus(QString s)
@@ -76,7 +81,7 @@ QString IndexerFsm::resume()
     return "resume";
 }
 
-QString IndexerFsm::manageIndexing(QStringList input,DbInteraction dbManager)
+QString IndexerFsm::manageIndexing(QStringList input,DbInteraction dbMan)
 {
     if(input.size()<2){
         return "INDEXER <STATUS|START|STOP|PAUSE|RESUME>";
@@ -99,4 +104,6 @@ QString IndexerFsm::manageIndexing(QStringList input,DbInteraction dbManager)
     return "INDEXER <STATUS|START|STOP|PAUSE|RESUME>";
 
 }
+
+
 

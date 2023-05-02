@@ -6,6 +6,7 @@
 
 
 #include "qsqldatabase.h"
+#include "qthread.h"
 #include <QObject>
 class DbInteraction
 {
@@ -17,7 +18,6 @@ public:
     void scanDisk(QString type);
     QString appendToTable(QString tableName, QString value);
     void initTables();
-
 
 };
 

@@ -1,5 +1,6 @@
 
 #include "dbinteraction.h"
+#include "qthread.h"
 #ifndef INDEXERFSM_H
 #include <QMap>
 #define INDEXERFSM_H
@@ -7,10 +8,12 @@
 
 
 
-class IndexerFsm
+class IndexerFsm : public QObject
 {
 public:
+    DbInteraction dbManager;
     IndexerFsm();
+    bool clientRequestedStopped;
     QMap<QString,QStringList> dialectIndexerMap;
     bool isStatus(QString input);
     bool isStart(QString input);
@@ -23,6 +26,7 @@ public:
     QString stop();
     QString resume();
     QString manageIndexing(QStringList input,DbInteraction dbManager);
+
 
 };
 

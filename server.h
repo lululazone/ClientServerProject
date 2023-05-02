@@ -6,6 +6,9 @@
 #include <QtNetwork>
 #include <QTcpServer>
 #include <QObject>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+
 
 class Server : public QObject
 {
@@ -15,11 +18,22 @@ class Server : public QObject
 public:
     explicit Server(QObject *parent = nullptr);
     DbInteraction dbManager;
+    QString message;
+    bool isPaused;
+    bool isTerminated;
+    bool isFinished;
+    bool isStopped;
+    bool isStarted;
+
+
 
 public slots:
     void startServer(quint16 port);
-    void sendMessage(QString message);
+    void scanDisk();
+
     void readData();
+    void getStatut();
+    void sendMessageToClients(QString message);
 
 private slots:
     void newConnection();
@@ -27,10 +41,12 @@ private slots:
 
 signals:
     void messageReceived(const QString &message);
+    void sendMessage(QString message);
 
 private:
     QTcpServer *server;
     QList<QTcpSocket *> clients;
+    void threaded();
 };
 
 

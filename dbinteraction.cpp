@@ -15,7 +15,6 @@ DbInteraction::DbInteraction()
     if(db.open()){
         qDebug() << "Database open";
         initTables();
-        appendToTable("WHITELIST","E:\Fakefolder");
     }
 
     //scanDisk("WHITELIST");
@@ -221,6 +220,8 @@ void DbInteraction::initTables()
 
     }
 }
+
+
 
 
 

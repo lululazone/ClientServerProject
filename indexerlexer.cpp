@@ -59,7 +59,7 @@ bool IndexerLexer::isClear(QString s)
 
 QString IndexerLexer::Tokenize(QStringList input,DbInteraction dbManager)
 {
-    IndexerFsm indexerFsm = *new IndexerFsm();
+    IndexerFsm indexerFsm;
     IndexerManagerLexer indexerManagerLexer = *new IndexerManagerLexer();
     if(isIndexer(input.first())){
         return indexerFsm.manageIndexing(input,dbManager);

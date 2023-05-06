@@ -5,9 +5,8 @@
 
 IndexerManagerLexer::IndexerManagerLexer()
 {
-    dialectMap["getclear"] = {"GET","CLEAR"};
-    dialectMap["addpush"] = {"ADD","PUSH"};
     dialectMap["listtype"] = {"WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"};
+    dialectMap["getclear"] = {"GET","CLEAR"};
 }
 
 bool IndexerManagerLexer::isError(QStringList s)

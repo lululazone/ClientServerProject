@@ -15,10 +15,14 @@ QString GetClearFsm::manageGetOrClear(QStringList input,QString typeList,DbInter
     if(input.size()<2){
         return "GET <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> or CLEAR <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS>";
     }
+    qDebug() << input.first()+" wsh ";
     if(isGet(input.first())){
+        qDebug() << "hein";
         return get(typeList,dbManager);
+
     }
     if(isClear(input.first())){
+        qDebug() << "quoi";
         return clear(typeList,dbManager);
     }
     return "No valid input for Get or Clear command";

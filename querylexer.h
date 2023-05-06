@@ -2,6 +2,7 @@
 #define QUERYLEXER_H
 
 #include "dbinteraction.h"
+#include "qdatetime.h"
 #include <Lexer.h>
 #include <QStringList>
 
@@ -11,18 +12,17 @@ class QueryLexer : public Lexer
 {
 public:
     QueryLexer();
+    QString fileName;
     QString Tokenize(QStringList input,DbInteraction dbManager);
-    QString optionToken(QStringList input);
-    QStringList optionFilter;
-    QString lastModified;
-    QString created;
-    QString maxSize;
-    QString minSize;
-    QString size;
-    QString ext;
-    QString type;
-    QString dateLexer(QString element);
-    QString sizeLexer(QString element);
+    bool isSearch(QStringList input);
+    bool isOption(QStringList input);
+    QString getResult(QString sqlQuery,DbInteraction dbManager);
+    QString getFileName() const;
+    QDateTime dateFixed;
+    QDateTime dateBegin;
+    QDateTime dateEnd;
+
+    void setFileName(QStringList input);
 };
 
 #endif // QUERYLEXER_H

@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     addpushfsm.cpp \
     client.cpp \
+    datelexer.cpp \
     dbinteraction.cpp \
     errormanager.cpp \
     getclearfsm.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     lexer.cpp \
     main.cpp \
     mainwindow.cpp \
+    optionlexer.cpp \
     querylexer.cpp \
     server.cpp \
     threadedoperation.cpp
@@ -27,6 +29,7 @@ SOURCES += \
 HEADERS += \
     addpushfsm.h \
     client.h \
+    datelexer.h \
     dbinteraction.h \
     errormanager.h \
     getclearfsm.h \
@@ -35,6 +38,7 @@ HEADERS += \
     indexermanagerlexer.h \
     lexer.h \
     mainwindow.h \
+    optionlexer.h \
     querylexer.h \
     server.h \
     threadedoperation.h

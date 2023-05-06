@@ -6,10 +6,9 @@
 
 IndexerLexer::IndexerLexer()
 {
+
     dialectMap["indexer"] = {"INDEXER"};
     dialectMap["othertype"] = {"GET","ADD","PUSH","CLEAR"};
-
-
 
 }
 

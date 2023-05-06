@@ -221,6 +221,45 @@ void DbInteraction::initTables()
     }
 }
 
+QString DbInteraction::complexQuery(QString queryInput,QString fileName)
+{
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("./qtdb.db");
+    if(db.open()){
+            QSqlDatabase db = QSqlDatabase::database("QSQLITE");
+            QSqlQuery query;
+            QString result;
+            qDebug() << queryInput;
+            qDebug() << fileName;
+            query.prepare(queryInput);
+            query.bindValue(":file",fileName);
+            query.exec();
+            if(!query.exec()){
+                return query.lastError().text();
+            }
+            int id = query.record().indexOf("filename");
+            while(query.next()){
+                result += " id: "+(query.value("id").toString());
+                result += " filename: "+(query.value("filename").toString());
+                result += " last_modified: "+(query.value("last_modified").toString());
+                result += " creationd_date: "+(query.value("creationd_date").toString());
+                result += " size: "+(query.value("size").toString());
+                result += " ext: "+(query.value("ext").toString());
+                result += " type: "+(query.value("type").toString());
+                result += " path: "+(query.value("path").toString());
+
+            }
+
+            if(result==""){
+                return "No data found with this query";
+            }
+            return result;
+    }
+    return "Error while opening database";
+
+
+}
+
 
 
 

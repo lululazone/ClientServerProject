@@ -16,6 +16,7 @@ public:
     QMap<QString,QStringList> dialectMap;
     QString Tokenize(QString input,ErrorManager error,DbInteraction dbManager);
     bool isIndexerState(QString input);
+    bool isQueryState(QString input);
 };
 
 #endif // LEXER_H

@@ -131,8 +131,8 @@ void Server::threaded()
                 QSqlQuery query;
                 query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext, type, path) VALUES (:filename, :last_modified, :creation_date, :size, :ext, :type, :path)");
                 query.bindValue(":filename", file);
-                query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd hh:mm:ss"));
-                query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd hh:mm:ss"));
+                query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd"));
+                query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd"));
                 query.bindValue(":size", fileSize);
                 query.bindValue(":ext", extension);
                 query.bindValue(":type", shortType);
@@ -144,8 +144,11 @@ void Server::threaded()
         }
 
     }
+
     isFinished = true;
     isStarted = false;
+    emit sendMessage("percentage 100 ");
+
 
 }
 
@@ -172,8 +175,11 @@ void Server::readData()
         QString message = QString::fromUtf8(data);
         qDebug() <<message;
         Lexer lexer;
+        QString output;
         ErrorManager error = *new ErrorManager();
-        QString output = lexer.Tokenize(message,error,dbManager);
+        if(message != ""){
+            output = lexer.Tokenize(message,error,dbManager);
+        }
         if(output == "start"){
             emit sendMessage("Indexing Started ");
             QFuture<void> future = QtConcurrent::run(&Server::threaded,this);

@@ -18,6 +18,7 @@ public:
     void scanDisk(QString type);
     QString appendToTable(QString tableName, QString value);
     void initTables();
+    QString complexQuery(QString queryInput,QString fileName);
 
 };
 

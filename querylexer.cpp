@@ -1,49 +1,70 @@
 #include "querylexer.h"
 
+#include <OptionLexer.h>
+
 QueryLexer::QueryLexer()
 {
-    optionFilter = {"LAST_MODIFIED","CREATED","MAX_SIZE","MIN_SIZE","SIZE","EXT","TYPE"};
 
+}
+
+QString QueryLexer::getFileName() const
+{
+    return fileName;
+}
+
+void QueryLexer::setFileName(QStringList input)
+{
+    fileName = "";
+    for(int i = 1;i<input.size();i++){
+        if(!dialectMap["options"].contains(input[i])){
+            fileName+=input[i]+" ";
+        }
+        else{
+            fileName.chop(1);
+            return;
+        }
+    }
+    fileName.chop(1);
 }
 
 QString QueryLexer::Tokenize(QStringList input,DbInteraction dbManager)
 {
+    setFileName(input);
+    QString sqlQuery = "SELECT * FROM files WHERE filename = :file";
     if(input.size()<2){
         return "Usage: SEARCH <filename_part> [OPTIONS]";
     }
-    return optionToken(input);
-}
-
-QString QueryLexer::optionToken(QStringList input)
-{
-    for (const QString &element : input) {
-        if((element==optionFilter[0])){
-            lastModified = dateLexer(element);
-        }
-        if((element==optionFilter[1])){
-            created = dateLexer(element);
-        }
-        if((element==optionFilter[2])){
-            maxSize = sizeLexer(element);
-        }
-        if((element==optionFilter[3])){
-            minSize = sizeLexer(element);
-        }
-        if((element==optionFilter[4])){
-            size = sizeLexer(element);
+    if(isSearch(input)){
+        if(isOption(input)){
+            OptionLexer *optionLexer = new OptionLexer();
+            sqlQuery += optionLexer->Tokenize(input,dbManager);
         }
     }
-    return "";
+
+    return getResult(sqlQuery,dbManager);
+
+
+
 }
 
-
-
-QString QueryLexer::dateLexer(QString element){
-    return element;//a continuer
+bool QueryLexer::isSearch(QStringList input)
+{
+    return dialectMap["query"].contains(input.first());
 }
 
-QString QueryLexer::sizeLexer(QString element){
-    return element;//a continuer
+bool QueryLexer::isOption(QStringList input)
+{
+    for(QString token : input){
+        if(dialectMap["options"].contains(token))
+            return true;
+
+    }
+    return false;
+}
+
+QString QueryLexer::getResult(QString sqlQuery, DbInteraction dbManager)
+{
+    return dbManager.complexQuery(sqlQuery,getFileName());
 }
 
 

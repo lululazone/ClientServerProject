@@ -31,7 +31,6 @@ QString Lexer::Tokenize(QString input,ErrorManager error,DbInteraction dbManager
 
     if(isIndexerState(s)){
         indexerLexer = *new IndexerLexer();
-        qDebug() << "Allo";
         return indexerLexer.Tokenize(tokenList,dbManager);
     }
     if(isQueryState(s)){

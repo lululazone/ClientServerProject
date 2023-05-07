@@ -14,7 +14,7 @@ QString QueryLexer::getFileName() const
 
 void QueryLexer::setFileName(QStringList input)
 {
-    fileName = "";
+    fileName = "%";
     for(int i = 1;i<input.size();i++){
         if(!dialectMap["options"].contains(input[i])){
             fileName+=input[i]+" ";
@@ -25,19 +25,27 @@ void QueryLexer::setFileName(QStringList input)
         }
     }
     fileName.chop(1);
+    fileName=+"%";
 }
 
 QString QueryLexer::Tokenize(QStringList input,DbInteraction dbManager)
 {
     setFileName(input);
-    QString sqlQuery = "SELECT * FROM files WHERE filename = :file";
+    QString sqlQuery = "SELECT * FROM files WHERE filename LIKE :file";
     if(input.size()<2){
         return "Usage: SEARCH <filename_part> [OPTIONS]";
     }
     if(isSearch(input)){
         if(isOption(input)){
             OptionLexer *optionLexer = new OptionLexer();
-            sqlQuery += optionLexer->Tokenize(input,dbManager);
+            QString optionResult = optionLexer->Tokenize(input,dbManager);
+            if(optionResult != "error"){
+                sqlQuery += optionResult;
+            }
+            else{
+                return "Error while trying to fetch options, ensure that you provided a correct syntax";
+            }
+
         }
     }
 

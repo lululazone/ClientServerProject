@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include "Lexer.h"
 #include "dbinteraction.h"
 #include "qsqldatabase.h"
 #include <QtNetwork>
@@ -23,6 +24,9 @@ public:
     bool isTerminated;
     bool isFinished;
     bool isStopped;
+    QFuture<void> future;
+    QEventLoop loop;
+    Lexer lexer;
     bool isStarted;
 
 
@@ -30,10 +34,14 @@ public:
 public slots:
     void startServer(quint16 port);
     void scanDisk();
-
+    int countFiles(const QString& path);
     void readData();
     void getStatut();
     void sendMessageToClients(QString message);
+    void onAsyncOperationFinished();
+    void onAsyncOperationPause();
+    void onAsyncOperationSuspend();
+    void onAsyncOperationResumed();
 
 private slots:
     void newConnection();

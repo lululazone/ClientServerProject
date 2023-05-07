@@ -32,7 +32,13 @@ void MainWindow::appendMessage(const QString& output)
        ui->progressBar->setValue(outputToList[1].toInt());
    }
    else{
-    ui->textEdit->insertPlainText(output);
+       if(output.contains("Error")){
+               ui->textEdit->setTextColor(QColorConstants::Red);
+       }
+       else{
+           ui->textEdit->setTextColor(QColorConstants::Black);
+       }
+        ui->textEdit->insertPlainText(output);
    }
 
 }

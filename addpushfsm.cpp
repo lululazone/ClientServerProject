@@ -13,10 +13,14 @@ QString AddPushFsm::manageAddOrPush(QStringList input, QString typeList, DbInter
     if(input.size()<2){
         return "ADD <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> or PUSH <WHITELIST|BLACKLIST|FILTERS|SKIPPED_FILTERS> <folders to add|type_list_spec> DONE";
     }
+
     if(isAdd(input.first())){
         return add(typeList,dbManager,input);
     }
     if(isPush(input.first())){
+        if(!input.contains(dialectAddPushMap["done"].constFirst())){
+            return "Missing Done Statement";
+        }
         return push(typeList,dbManager,input);
     }
     return "No valid input for Get or Clear command";

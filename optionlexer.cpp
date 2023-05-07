@@ -24,8 +24,13 @@ QString OptionLexer::Tokenize(QStringList input, DbInteraction dbManager)
             QString inputPattern="";
             int y= i+1;
             datelexer dlexer;
-
-            sqlQuery += dlexer.buildQuery(input,y,input[i]);
+            QString dateResult = dlexer.buildQuery(input,y,input[i]);
+            if(dateResult != "error"){
+                sqlQuery += dateResult;
+            }
+            else{
+                return "error";
+            }
             qDebug() << sqlQuery + " On iteration: "+QString::number(i);
         }
     }

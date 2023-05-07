@@ -5,7 +5,7 @@
 
 IndexerManagerLexer::IndexerManagerLexer()
 {
-    dialectMap["listtype"] = {"WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS"};
+    dialectMap["listtype"] = {"WHITELIST","BLACKLIST","FILTERS","SKIPPED_FILTERS","FILES"};
     dialectMap["getclear"] = {"GET","CLEAR"};
 }
 

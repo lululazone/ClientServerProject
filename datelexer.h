@@ -14,10 +14,15 @@ public:
     QString type;
     QString dateMatched;
     QRegularExpression reSimple;
+    QRegularExpression reMonthPrecision;
+    QRegularExpression reYearPrecision;
+    QRegularExpression reTwoDigitYearPrecision;
     QString buildQuery(QStringList input, int cur,QString type);
-    bool datePatternMatch(QString input);
+    bool datePatternMatch(QString input, QRegularExpressionMatch match, int i);
     QString getDateMatched() const;
-    void setDateMatched(const QString &newDateMatched);
+    QString dateMonthPrecision(QDateTime date);
+    QString dateYearPrecision(QDateTime date, int type);
+    void setDateMatched(const QString &newDateMatched, int type);
     QString getType() const;
     void setType(const QString &newType);
 };

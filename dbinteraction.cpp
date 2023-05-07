@@ -57,6 +57,14 @@ QString DbInteraction::deleteTable(QString type)
             }
             return "Successfully removed table: "+type;
         }
+        if(type == "FILES"){
+            QSqlQuery query;
+            query.prepare("DELETE FROM files");
+            if(!query.exec()){
+                return "failed to delete table: "+type;
+            }
+            return "Successfully removed table: "+type;
+        }
 
     }
     return "failed to connect to the database";
@@ -239,14 +247,15 @@ QString DbInteraction::complexQuery(QString queryInput,QString fileName)
             }
             int id = query.record().indexOf("filename");
             while(query.next()){
-                result += " id: "+(query.value("id").toString());
-                result += " filename: "+(query.value("filename").toString());
-                result += " last_modified: "+(query.value("last_modified").toString());
-                result += " creationd_date: "+(query.value("creationd_date").toString());
-                result += " size: "+(query.value("size").toString());
-                result += " ext: "+(query.value("ext").toString());
-                result += " type: "+(query.value("type").toString());
-                result += " path: "+(query.value("path").toString());
+                result += "--- id: "+(query.value("id").toString());
+                result += " \n filename: "+(query.value("filename").toString());
+                result += " \n last_modified: "+(query.value("last_modified").toString());
+                result += " \n creationd_date: "+(query.value("creationd_date").toString());
+                result += " \n size: "+(query.value("size").toString());
+                result += " \n ext: "+(query.value("ext").toString());
+                result += " \n type: "+(query.value("type").toString());
+                result += " \n path: "+(query.value("path").toString());
+                result += "---\n";
 
             }
 

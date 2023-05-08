@@ -25,7 +25,8 @@ SOURCES += \
     optionlexer.cpp \
     querylexer.cpp \
     server.cpp \
-    threadedoperation.cpp
+    threadedoperation.cpp \
+    typelexer.cpp
 
 HEADERS += \
     addpushfsm.h \
@@ -43,7 +44,8 @@ HEADERS += \
     optionlexer.h \
     querylexer.h \
     server.h \
-    threadedoperation.h
+    threadedoperation.h \
+    typelexer.h
 
 FORMS += \
     mainwindow.ui

@@ -1,13 +1,12 @@
 
-#include "extensionlexer.h"
-#include "qforeach.h"
+#include "typelexer.h"
 
-ExtensionLexer::ExtensionLexer()
+TypeLexer::TypeLexer()
 {
 
 }
 
-QString ExtensionLexer::buildQuery(QString value)
+QString TypeLexer::buildQuery(QString value)
 {
     QString result = " AND (";
     QStringList extensionsList;
@@ -22,7 +21,7 @@ QString ExtensionLexer::buildQuery(QString value)
 
     qDebug() << extensionsList.size();
     for(int i =0; i<extensionsList.size();i++){
-        result+=" ext = '"+extensionsList[i]+"'";
+        result+=" type = '"+extensionsList[i]+"'";
         if(i+1<extensionsList.size()){
             result+=" OR ";
         }
@@ -31,5 +30,6 @@ QString ExtensionLexer::buildQuery(QString value)
         }
     }
     return result;
+
 }
 

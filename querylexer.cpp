@@ -17,19 +17,22 @@ void QueryLexer::setFileName(QStringList input)
     QString temp="%";
     for(int i = 1;i<input.size();i++){
         if(!dialectMap["options"].contains(input[i])){
+            qDebug() <<input[i];
             temp+=input[i]+" ";
         }
         else{
             temp.chop(1);
-            temp=+"%";
+
+            temp+="%";
             fileName = temp;
+            qDebug() << "Name of the file is "+fileName;
             return;
         }
     }
     temp.chop(1);
     temp+="%";
     fileName = temp;
-    qDebug() << fileName;
+    qDebug() << "Name of the file is "+fileName;
 
 }
 

@@ -3,11 +3,14 @@
 #include "datelexer.h"
 #include "extensionlexer.h"
 #include "qregularexpression.h"
+#include "typelexer.h"
 
 OptionLexer::OptionLexer()
 {
     dialectMap["date"] = {"LAST_MODIFIED","CREATED"};
     dialectMap["ext"] = {"EXT"};
+    dialectMap["options"] = {"LAST_MODIFIED","CREATED","MAX_SIZE","MIN_SIZE","SIZE","EXT","TYPE"};
+    dialectMap["type"] = {"TYPE"};
 
 }
 
@@ -37,14 +40,21 @@ QString OptionLexer::Tokenize(QStringList input, DbInteraction dbManager)
         }
         if(isExt(input[i])){
             ExtensionLexer extLexer;
-
-            QString extResult = extLexer.buildQuery(input[i+1]);
+            QString parameter = catchParameter(input,i+1);
+            QString extResult = extLexer.buildQuery(parameter);
             if(extResult == "error"){
                 return "error";
             }
             sqlQuery+=extResult;
-
-
+        }
+        if(isType(input[i])){
+            TypeLexer typeLexer;
+            QString parameter = catchParameter(input,i+1);
+            QString extResult = typeLexer.buildQuery(parameter);
+            if(extResult == "error"){
+                return "error";
+            }
+            sqlQuery+=extResult;
         }
     }
 
@@ -59,6 +69,30 @@ bool OptionLexer::dateMatch(QString input)
 bool OptionLexer::isExt(QString input)
 {
     return dialectMap["ext"].contains(input);
+}
+
+bool OptionLexer::isType(QString input)
+{
+    return dialectMap["type"].contains(input);
+}
+
+QString OptionLexer::catchParameter(QStringList input,int cur)
+{
+    QString result="";
+    for(int i=cur;i<input.size();i++){
+        if(!dialectMap["options"].contains(input[i])){
+
+            result += input[i];
+            result += " ";
+        }
+        else{
+            result.chop(1);
+            return result;
+        }
+    }
+    result.chop(1);
+    return result;
+
 }
 
 

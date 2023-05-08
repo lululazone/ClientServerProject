@@ -57,7 +57,6 @@ void Server::newConnection()
 void Server::readData()
 {
         QTcpSocket *client = qobject_cast<QTcpSocket *>(sender());
-
         if (!client)
             return;
         QByteArray data = client->readAll();
@@ -79,7 +78,6 @@ void Server::scanDisk()
         connect(&thread, SIGNAL(started()), this, SLOT(threaded()));
         thread.start();
         thread.setPriority(QThread::LowPriority);
-
 }
 
 
@@ -154,7 +152,6 @@ void Server::threaded(){
             }
         }
         sendMessage("Done !");
-
 }
 
 void Server::displayError(QAbstractSocket::SocketError socketError)

@@ -25,6 +25,7 @@ SOURCES += \
     optionlexer.cpp \
     querylexer.cpp \
     server.cpp \
+    sizelexer.cpp \
     threadedoperation.cpp \
     typelexer.cpp
 
@@ -44,6 +45,7 @@ HEADERS += \
     optionlexer.h \
     querylexer.h \
     server.h \
+    sizelexer.h \
     threadedoperation.h \
     typelexer.h
 

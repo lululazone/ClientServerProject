@@ -7,7 +7,7 @@
 
 IndexerFsm::IndexerFsm()
 {
-    dialectIndexerMap["statut"] = {"STATUT"};
+    dialectIndexerMap["statut"] = {"STATUS"};
     dialectIndexerMap["start"] = {"START"};
     dialectIndexerMap["stop"] = {"STOP"};
     dialectIndexerMap["pause"] = {"PAUSE"};

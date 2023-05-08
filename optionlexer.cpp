@@ -3,6 +3,7 @@
 #include "datelexer.h"
 #include "extensionlexer.h"
 #include "qregularexpression.h"
+#include "sizelexer.h"
 #include "typelexer.h"
 
 OptionLexer::OptionLexer()
@@ -11,6 +12,7 @@ OptionLexer::OptionLexer()
     dialectMap["ext"] = {"EXT"};
     dialectMap["options"] = {"LAST_MODIFIED","CREATED","MAX_SIZE","MIN_SIZE","SIZE","EXT","TYPE"};
     dialectMap["type"] = {"TYPE"};
+    dialectMap["size"] = {"MAX_SIZE","MIN_SIZE","SIZE"};
 
 }
 
@@ -56,8 +58,17 @@ QString OptionLexer::Tokenize(QStringList input, DbInteraction dbManager)
             }
             sqlQuery+=extResult;
         }
+        if(isSize(input[i])){
+            SizeLexer sizeLexer;
+            QString parameter = catchParameter(input,i+1);
+            QString sizeResult = sizeLexer.buildQuery(parameter,input[i]);
+            if(sizeResult == "error"){
+                return "error";
+            }
+            sqlQuery+=sizeResult;
+        }
     }
-
+    qDebug() << sqlQuery;
     return sqlQuery;
 }
 
@@ -74,6 +85,11 @@ bool OptionLexer::isExt(QString input)
 bool OptionLexer::isType(QString input)
 {
     return dialectMap["type"].contains(input);
+}
+
+bool OptionLexer::isSize(QString input)
+{
+    return dialectMap["size"].contains(input);
 }
 
 QString OptionLexer::catchParameter(QStringList input,int cur)

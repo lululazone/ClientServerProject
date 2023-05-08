@@ -19,6 +19,7 @@ public:
     bool datePatternMatch(QString input);
     bool isExt(QString input);
     bool isType(QString input);
+    bool isSize(QString input);
     QString catchParameter(QStringList input,int cur);
     QString isolateDate(QStringList inputList, int cur,QString result);
 };

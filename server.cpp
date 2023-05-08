@@ -125,6 +125,7 @@ void Server::threaded()
         foreach (QString path, pathList) {
             emit sendMessage("Wait, preparing indexing...");
             percentageMax += countFiles(path);
+            emit sendMessage("\n Counting files:"+percentageMax);
             qDebug() << percentageMax;
         }
     }
@@ -179,6 +180,10 @@ void Server::threaded()
                 #pragma omp for
                 for(int j = 0; j<files.size();j++){
                     readData();
+                    emit sendMessage("Trying to add file: "+files[j] + "\n ");
+                    actualPercentage++;
+                    int fixedpercentage = (actualPercentage*90)/percentageMax;
+                    emit sendMessage(" percentage " + QString::number(fixedpercentage)+" ");
                     if(isPaused){
                         emit sendMessage("INDEXING PAUSED");
                     }
@@ -188,6 +193,7 @@ void Server::threaded()
                     }
                     if(isStopped){
                         emit sendMessage("INDEXING STOPPED");
+                        future.suspend();
                         return;
                     }
 
@@ -217,6 +223,11 @@ void Server::threaded()
                     QStringList fileName;
                     fileName = files[j].split(".");
                     files[j] = fileName[0];
+
+
+
+
+
                     //add file info to database here
                     QSqlQuery query;
                     if((filterList.empty() || filterList.contains(extension)) && !skipped_filterList.contains(extension) ){
@@ -231,15 +242,13 @@ void Server::threaded()
                             query.bindValue(":type", shortType);
                             query.bindValue(":path", path);
                             bool isExec = query.exec();
-                            while (!isExec) {
+                            if (!isExec) {
                                 qDebug() << "Failed to add file to database: " << query.lastError().text();
                                 qDebug() <<files[j]<<lastModified.toString("yyyy-MM-dd")<<creationDate.toString("yyyy-MM-dd")<<fileSize<<extension<<shortType<<path;
                                 isExec = query.exec();
                             }
-                            emit sendMessage("Adding file: "+files[j] + "\n ");
-                            actualPercentage++;
-                            int fixedpercentage = (actualPercentage*100)/percentageMax;
-                            emit sendMessage(" percentage " + QString::number(fixedpercentage)+" ");
+
+
                         }
                         else{
                             emit sendMessage("Skipping "+files[j]+" because it's already in database\n ");
@@ -251,7 +260,7 @@ void Server::threaded()
                         actualPercentage++;
                         emit sendMessage("Skipping "+files[j]+" because it does not match filters\n ");
                         int fixedpercentage = (actualPercentage*100)/percentageMax;
-                        emit sendMessage(" percentage " + QString::number(fixedpercentage)+" ");
+                        emit sendMessage("\n percentage " + QString::number(fixedpercentage)+" ");
                     }
 
                 }
@@ -266,7 +275,9 @@ void Server::threaded()
 
     isFinished = true;
     isStarted = false;
-    emit sendMessage("percentage 100 ");
+    emit sendMessage("\n percentage 100 ");
+    emit sendMessage("\n percentage 100 ");
+    emit sendMessage("\n percentage 100 ");
 
 
 }
@@ -305,7 +316,7 @@ void Server::readData()
             future = QtConcurrent::run(&Server::threaded,this);
             QFutureWatcher<void> watcher;
 
-            connect(&watcher, SIGNAL(finished()), &loop, SLOT(onAsyncOperationFinished()),Qt::QueuedConnection);
+            connect(&watcher, SIGNAL(finished()), &loop, SLOT(quit()),Qt::QueuedConnection);
             connect(&watcher, SIGNAL(paused()), &loop, SLOT(onAsyncOperationPause()),Qt::QueuedConnection);
             connect(&watcher, SIGNAL(resumed()), &loop, SLOT(onAsyncOperationResumed()),Qt::QueuedConnection);
             connect(&watcher, SIGNAL(suspended()), &loop, SLOT(onAsyncOperationSuspend()),Qt::QueuedConnection);

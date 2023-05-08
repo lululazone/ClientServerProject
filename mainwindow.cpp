@@ -28,8 +28,25 @@ MainWindow::~MainWindow()
 void MainWindow::appendMessage(const QString& output)
 {
    QStringList outputToList = output.split(" ");
+   qDebug() <<output;
    if(outputToList.contains("percentage")){
-       ui->progressBar->setValue(outputToList[1].toInt());
+       for(int j =0; j<outputToList.size();j++){
+
+           if(outputToList[j] == "percentage"){
+               if(j+1<outputToList.size()){
+                   ui->progressBar->setValue(outputToList[j+1].toInt());
+                   outputToList.removeAt(j+1);
+               }
+               if(j>=0){
+                   outputToList.removeAt(j);
+               }
+           }
+       }
+       QString printable ="";
+       for(int i=0;i<outputToList.size();i++){
+           printable+=outputToList[i] + " ";
+       }
+       ui->textEdit->insertPlainText(printable);
    }
    else{
        if(output.contains("Error")){

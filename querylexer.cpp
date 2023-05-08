@@ -4,32 +4,38 @@
 
 QueryLexer::QueryLexer()
 {
-
+    dialectMap["options"] = {"LAST_MODIFIED","CREATED","MAX_SIZE","MIN_SIZE","SIZE","EXT"};
 }
 
-QString QueryLexer::getFileName() const
+QString QueryLexer::getFileName()
 {
     return fileName;
 }
 
 void QueryLexer::setFileName(QStringList input)
 {
-    fileName = "%";
+    QString temp="%";
     for(int i = 1;i<input.size();i++){
         if(!dialectMap["options"].contains(input[i])){
-            fileName+=input[i]+" ";
+            temp+=input[i]+" ";
         }
         else{
-            fileName.chop(1);
+            temp.chop(1);
+            temp=+"%";
+            fileName = temp;
             return;
         }
     }
-    fileName.chop(1);
-    fileName=+"%";
+    temp.chop(1);
+    temp+="%";
+    fileName = temp;
+    qDebug() << fileName;
+
 }
 
 QString QueryLexer::Tokenize(QStringList input,DbInteraction dbManager)
 {
+    qDebug()<<input.size();
     setFileName(input);
     QString sqlQuery = "SELECT * FROM files WHERE filename LIKE :file";
     if(input.size()<2){

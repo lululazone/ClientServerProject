@@ -14,6 +14,7 @@ SOURCES += \
     datelexer.cpp \
     dbinteraction.cpp \
     errormanager.cpp \
+    extensionlexer.cpp \
     getclearfsm.cpp \
     indexerfsm.cpp \
     indexerlexer.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     datelexer.h \
     dbinteraction.h \
     errormanager.h \
+    extensionlexer.h \
     getclearfsm.h \
     indexerfsm.h \
     indexerlexer.h \

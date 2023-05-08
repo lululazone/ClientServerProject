@@ -1,11 +1,13 @@
 
 #include "optionlexer.h"
 #include "datelexer.h"
+#include "extensionlexer.h"
 #include "qregularexpression.h"
 
 OptionLexer::OptionLexer()
 {
     dialectMap["date"] = {"LAST_MODIFIED","CREATED"};
+    dialectMap["ext"] = {"EXT"};
 
 }
 
@@ -33,13 +35,30 @@ QString OptionLexer::Tokenize(QStringList input, DbInteraction dbManager)
             }
             qDebug() << sqlQuery + " On iteration: "+QString::number(i);
         }
+        if(isExt(input[i])){
+            ExtensionLexer extLexer;
+
+            QString extResult = extLexer.buildQuery(input[i+1]);
+            if(extResult == "error"){
+                return "error";
+            }
+            sqlQuery+=extResult;
+
+
+        }
     }
+
     return sqlQuery;
 }
 
 bool OptionLexer::dateMatch(QString input)
 {
     return dialectMap["date"].contains(input);
+}
+
+bool OptionLexer::isExt(QString input)
+{
+    return dialectMap["ext"].contains(input);
 }
 
 

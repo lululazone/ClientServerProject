@@ -134,14 +134,35 @@ void Server::threaded()
     }
 
     QStringList fileAlreadyInTable;
+    QStringList blackList;
+    QStringList filterList;
+    QStringList skipped_filterList;
     QSqlQuery querySelect;
     querySelect.exec("SELECT * FROM files");
     int id = querySelect.record().indexOf("filename");
     while(querySelect.next()){
-        fileAlreadyInTable.append(querySelect.value("path").toString());
+        fileAlreadyInTable.append(querySelect.value("filename").toString()+querySelect.value("ext").toString());
+    }
+    querySelect.exec("SELECT * FROM BLACKLIST");
+    while(querySelect.next()){
+        blackList.append(querySelect.value("name").toString());
+    }
+    querySelect.exec("SELECT * FROM FILTERS");
+    while(querySelect.next()){
+        filterList.append(querySelect.value("name").toString());
+    }
+    querySelect.exec("SELECT * FROM SKIPPED_FILTERS");
+    while(querySelect.next()){
+        skipped_filterList.append(querySelect.value("name").toString());
+    }
+    for(int i =0;i<pathList.size();i++){
+        if(blackList.contains(pathList[i])){
+            pathList.removeAt(i);
+        }
     }
     try{
         for(int i =0; i<pathList.size();i++) {
+
             QDirIterator it(pathList[i], QDirIterator::Subdirectories);
 
             QString message = "";
@@ -152,6 +173,9 @@ void Server::threaded()
 
                 QDir directory(message);
                 QStringList files = directory.entryList(QStringList() << "*.*",QDir::Files);
+                if(blackList.contains(message)){
+                    files.clear();
+                }
                 #pragma omp for
                 for(int j = 0; j<files.size();j++){
                     readData();
@@ -166,15 +190,13 @@ void Server::threaded()
                         emit sendMessage("INDEXING STOPPED");
                         return;
                     }
-                    emit sendMessage("Adding file: "+files[j] + "\n");
+
                     QFileInfo fileInfo(message+"/"+files[j]);
                     QDateTime creationDate = fileInfo.birthTime();
                     QDateTime lastModified = fileInfo.lastModified();
                     qint64 fileSize = fileInfo.size();
                     QString outputDebug = creationDate.toString() + lastModified.toString();
-                    actualPercentage++;
-                    int fixedpercentage = (actualPercentage*100)/percentageMax;
-                    emit sendMessage("percentage " + QString::number(fixedpercentage)+" ");
+
 
                     //getting the extension
                     QString extension;
@@ -197,26 +219,39 @@ void Server::threaded()
                     files[j] = fileName[0];
                     //add file info to database here
                     QSqlQuery query;
-                    if(!fileAlreadyInTable.contains(path)){
-                        fileAlreadyInTable.append(path);
-                        query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext, type, path) VALUES (:filename, :last_modified, :creation_date, :size, :ext, :type, :path)");
-                        query.bindValue(":filename", files[j]);
-                        query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd"));
-                        query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd"));
-                        query.bindValue(":size", fileSize);
-                        query.bindValue(":ext", extension);
-                        query.bindValue(":type", shortType);
-                        query.bindValue(":path", path);
-                        bool isExec = query.exec();
-                        while (!isExec) {
-                            qDebug() << "Failed to add file to database: " << query.lastError().text();
-                            qDebug() <<files[j]<<lastModified.toString("yyyy-MM-dd")<<creationDate.toString("yyyy-MM-dd")<<fileSize<<extension<<shortType<<path;
-                            isExec = query.exec();
+                    if((filterList.empty() || filterList.contains(extension)) && !skipped_filterList.contains(extension) ){
+                        if(!fileAlreadyInTable.contains(files[j]+extension)){
+                            fileAlreadyInTable.append(path);
+                            query.prepare("INSERT INTO files (filename, last_modified, creation_date, size, ext, type, path) VALUES (:filename, :last_modified, :creation_date, :size, :ext, :type, :path)");
+                            query.bindValue(":filename", files[j]);
+                            query.bindValue(":last_modified", lastModified.toString("yyyy-MM-dd"));
+                            query.bindValue(":creation_date", creationDate.toString("yyyy-MM-dd"));
+                            query.bindValue(":size", fileSize);
+                            query.bindValue(":ext", extension);
+                            query.bindValue(":type", shortType);
+                            query.bindValue(":path", path);
+                            bool isExec = query.exec();
+                            while (!isExec) {
+                                qDebug() << "Failed to add file to database: " << query.lastError().text();
+                                qDebug() <<files[j]<<lastModified.toString("yyyy-MM-dd")<<creationDate.toString("yyyy-MM-dd")<<fileSize<<extension<<shortType<<path;
+                                isExec = query.exec();
+                            }
+                            emit sendMessage("Adding file: "+files[j] + "\n ");
+                            actualPercentage++;
+                            int fixedpercentage = (actualPercentage*100)/percentageMax;
+                            emit sendMessage(" percentage " + QString::number(fixedpercentage)+" ");
+                        }
+                        else{
+                            emit sendMessage("Skipping "+files[j]+" because it's already in database\n ");
                         }
 
                     }
                     else{
-                        emit sendMessage("Skipping "+files[j]+" because it's already in database");
+
+                        actualPercentage++;
+                        emit sendMessage("Skipping "+files[j]+" because it does not match filters\n ");
+                        int fixedpercentage = (actualPercentage*100)/percentageMax;
+                        emit sendMessage(" percentage " + QString::number(fixedpercentage)+" ");
                     }
 
                 }

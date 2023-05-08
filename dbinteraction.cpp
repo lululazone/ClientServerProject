@@ -250,7 +250,7 @@ QString DbInteraction::complexQuery(QString queryInput,QString fileName)
                 result += "--- id: "+(query.value("id").toString());
                 result += " \n filename: "+(query.value("filename").toString());
                 result += " \n last_modified: "+(query.value("last_modified").toString());
-                result += " \n creationd_date: "+(query.value("creationd_date").toString());
+                result += " \n creationd_date: "+(query.value("creation_date").toString());
                 result += " \n size: "+(query.value("size").toString());
                 result += " \n ext: "+(query.value("ext").toString());
                 result += " \n type: "+(query.value("type").toString());

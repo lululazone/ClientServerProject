@@ -17,7 +17,7 @@ public:
     bool isSearch(QStringList input);
     bool isOption(QStringList input);
     QString getResult(QString sqlQuery,DbInteraction dbManager);
-    QString getFileName() const;
+    QString getFileName();
     QDateTime dateFixed;
     QDateTime dateBegin;
     QDateTime dateEnd;

@@ -17,7 +17,7 @@ public:
     QString Tokenize(QStringList input,DbInteraction dbManager);
     bool dateMatch(QString input);
     bool datePatternMatch(QString input);
-
+    bool isExt(QString input);
     QString isolateDate(QStringList inputList, int cur,QString result);
 };
 
